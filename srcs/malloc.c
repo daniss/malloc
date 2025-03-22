@@ -3,6 +3,10 @@
 t_zone *g_zones[3] = {NULL, NULL, NULL};
 pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+size_t get_page_size(void) {
+    return sysconf(_SC_PAGESIZE);
+}
+
 void *mmap_new_zone(size_t size) {
     void *addr;
     

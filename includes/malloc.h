@@ -16,8 +16,10 @@
 #define TINY_MAX 128
 #define SMALL_MAX 1024
 
-#define TINY_ZONE_SIZE (getpagesize() * 4)  /* 16KB for 4KB pages */
-#define SMALL_ZONE_SIZE (getpagesize() * 25) /* 100KB for 4KB pages */
+size_t get_page_size(void);
+
+#define TINY_ZONE_SIZE (get_page_size() * 4)  /* 16KB for 4KB pages */
+#define SMALL_ZONE_SIZE (get_page_size() * 25) /* 100KB for 4KB pages */
 
 /* Memory block metadata */
 typedef struct s_block {
