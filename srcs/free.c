@@ -30,6 +30,17 @@ int is_zone_free(t_zone *zone) {
     return 1;
 }
 
+int is_valid_block_ptr(void *ptr, t_zone *zone) {
+    t_block *block = zone->blocks;
+
+    while (block) {
+        if ((void*)((char*)block + sizeof(t_block)) == ptr)
+            return 1;
+        block = block->next;
+    }
+    return 0;
+}
+
 void unmap_zone(t_zone *zone, e_zone_type type) {
     t_zone *prev = NULL;
     t_zone *curr = g_zones[type];
@@ -59,12 +70,12 @@ void free(void *ptr) {
     pthread_mutex_lock(&g_mutex);
 
     zone = find_zone_of_ptr(ptr);
-    t_block *curr = zone->blocks;
-    if (!zone) {
+    if (!zone || !is_valid_block_ptr(ptr, zone)) {
         pthread_mutex_unlock(&g_mutex);
         return;
     }
 
+    t_block *curr = zone->blocks;
     block = payload_to_block(ptr);
 
     while (curr && curr != block) {
